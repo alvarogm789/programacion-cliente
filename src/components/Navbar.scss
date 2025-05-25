@@ -1,0 +1,70 @@
+// .navbar {
+//   font-size: 1.2rem;     /* Aumenta el tamaño de la fuente */
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//version sin redondear opciones---------------
+// .navbar a {
+//   font-size: 1.2rem;     /* Aumenta el tamaño de la fuente */
+//   font-weight: bold;     /* Hace las letras más gruesas */
+
+//   //   font-weight: normal;
+//   font-size: 16px;
+// //   color: black;
+// //   text-decoration: none;
+//   padding: 7px;
+// }
+
+// .navbar a.activo {
+//   color: #064509;  /* color cuando está seleccionado */
+//   font-weight: bold;
+//   font-size: 18px;
+// }
+//version sin redondear opciones---------------
+
+
+
+
+
+
+
+
+
+
+.navbar a {
+  display: inline-block;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 8px 20px;
+  margin-right: 12px;
+  color: black;
+  text-decoration: none;
+  border-radius: 25px;       // botón muy redondeado
+  border: 2px solid transparent;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+  background-color: #f0f0f0;  // fondo base para todos
+}
+
+.navbar a:hover {
+  background-color: #d6d6d6;  // hover más oscuro
+}
+
+.navbar a.activo {
+  background-color: #064509;  // fondo del seleccionado
+  color: white;               // texto blanco
+  border-color: #064509;
+}
