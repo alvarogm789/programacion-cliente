@@ -752,6 +752,7 @@ export default function VerProgramacion() {
     fechaFinDeServicio: ''
   });
 
+  const [vehiculos, setVehiculos] = useState([]); //obteniendo informacion de vehiculos registrados
   const [programaciones, setProgramaciones] = useState([]);
   const [mesSeleccionado, setMesSeleccionado] = useState(4); // Mayo
   const [anioSeleccionado, setAnioSeleccionado] = useState(2025);
@@ -759,6 +760,7 @@ export default function VerProgramacion() {
   const [serviciosDelDia, setServiciosDelDia] = useState([]);
 
   useEffect(() => {
+    //obteniendo servicios
     axios
       .get('http://localhost:5600/api/v1/Servicio')
       .then((res) => {
@@ -769,6 +771,18 @@ export default function VerProgramacion() {
         console.error('Error al obtener programaciones:', err);
         setProgramaciones([]);
       });
+
+    // Obtener vehículos y placas
+    axios.get('http://localhost:5600/api/v1/Vehiculo')
+      .then((res) => {
+        const data = Array.isArray(res.data) ? res.data : res.data.msg;
+        setVehiculos(data);
+      })
+      .catch((err) => {
+        console.error('Error al obtener vehículos:', err);
+        setVehiculos([]);
+      });
+
   }, []);
 
   const handleChange = (e) => {
@@ -776,8 +790,29 @@ export default function VerProgramacion() {
     setFormulario({ ...formulario, [name]: value });
   };
 
+
+  const verificarDisponibilidadPlaca = () => { //verificando si en el rango ya la placa tiene servicio
+    const inicioNuevo = new Date(formulario.fechaInicioDeServicio);
+    const finNuevo = new Date(formulario.fechaFinDeServicio);
+
+    return programaciones.some(servicio => {
+      if (servicio.placaVehiculoAsignado === formulario.placaVehiculoAsignado) {
+        const inicioExistente = new Date(servicio.fechaInicioDeServicio);
+        const finExistente = new Date(servicio.fechaFinDeServicio);
+
+        return (inicioNuevo <= finExistente && finNuevo >= inicioExistente);
+      }
+      return false;
+    });
+    };
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (verificarDisponibilidadPlaca()) {
+      alert("🚫 No se puede guardar el servicio: la placa ya está asignada en el rango de fechas.");
+      return;
+    }
     axios
       .post('http://localhost:5600/api/v1/Servicio', formulario)
       .then(() => {
@@ -793,6 +828,7 @@ export default function VerProgramacion() {
       .then((res) => {
         const data = Array.isArray(res.data) ? res.data : res.data.msg;
         setProgramaciones(data);
+        alert("✅ Servicio guardado con éxito");
       })
       .catch((err) => console.error('Error al guardar o recargar:', err));
   };
@@ -871,7 +907,7 @@ export default function VerProgramacion() {
           />
         </div>
 
-        <div className="form-group">
+        {/* <div className="form-group">
           <label>Placa</label>
           <input
             type="text"
@@ -879,7 +915,21 @@ export default function VerProgramacion() {
             value={formulario.placaVehiculoAsignado}
             onChange={handleChange}
           />
+        </div> */}
+
+        <div className="form-group">
+          <label>Placa</label>
+          <p>Los vehiculos Inactivos no se muestran en esta lista</p>
+          <select name="placaVehiculoAsignado" value={formulario.placaVehiculoAsignado} onChange={handleChange}>
+            <option value="">Seleccione una placa</option>
+            {vehiculos.map((vehiculo, index) => (
+              <option key={index} value={vehiculo.placaVehiculo}>
+                {vehiculo.placaVehiculo}
+              </option>
+            ))}
+          </select>
         </div>
+
 
         <div className="form-group">
           <label>Descripción</label>
