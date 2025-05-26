@@ -738,7 +738,7 @@
 
 
 
-
+//funciona sin scroll horizontal y vertical en la tabla
 import { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import './VerProgramacion.scss';
