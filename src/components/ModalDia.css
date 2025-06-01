@@ -1,0 +1,107 @@
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.modal-content {
+  background: #fff;
+  border-radius: 10px;
+  padding: 2rem 2.5rem;
+  min-width: 320px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  position: relative;
+  animation: modalIn 0.2s;
+}
+@keyframes modalIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+.modal-close {
+  position: absolute;
+  top: 10px; right: 15px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.modal-close:hover {
+  color: #e74c3c;
+}
+
+/* Título principal del modal */
+.modal-title {
+  text-align: center;
+  margin: 0 0 18px 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  letter-spacing: 0.5px;
+}
+
+/* Subtítulos */
+.modal-section-title {
+  color: #2980b9;
+  margin-bottom: 8px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+/* Lista de servicios activos */
+.modal-servicios-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 24px;
+}
+.modal-servicio-item {
+  background: #f4f8fb;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  padding: 10px 16px;
+  box-shadow: 0 1px 4px rgba(44,62,80,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.modal-servicio-placa {
+  font-weight: 600;
+  color: #16a085;
+}
+.modal-servicio-desc {
+  font-weight: 500;
+  margin-left: 10px;
+  color: #222;
+}
+.modal-servicio-id {
+  color: #888;
+  font-size: 0.95em;
+  margin-left: auto;
+}
+
+/* Lista de vehículos disponibles */
+.modal-vehiculos-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.modal-vehiculo-item {
+  background: #eafaf1;
+  border-radius: 6px;
+  padding: 6px 14px;
+  color: #229954;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(39,174,96,0.07);
+  margin-bottom: 4px;
+  font-size: 1rem;
+}

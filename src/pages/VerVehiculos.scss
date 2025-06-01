@@ -47,4 +47,159 @@
       background-color: #f8f8f8;
     }
   }
+
+  .btn-eliminar {
+    color: #fff;
+    background: #e74c3c;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-eliminar:hover {
+    background: #c0392b;
+  }
+
+  .tarjeta-agregar-vehiculo {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 24px;
+    margin-bottom: 24px;
+
+    .titulo-tarjeta-servicio {
+      color: #1976d2;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+      letter-spacing: 0.5px;
+    }
+
+    .formulario-vehiculo {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      max-width: 400px;
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+
+        label {
+          font-weight: 600;
+          color: #388e3c;
+          margin-bottom: 2px;
+        }
+
+        input,
+        select {
+          padding: 0.6rem 0.8rem;
+          border-radius: 6px;
+          border: 1.5px solid #b2dfdb;
+          font-size: 1rem;
+          transition: border 0.2s;
+          background: #f8fff8;
+
+          &:focus {
+            border-color: #66A182;
+            outline: none;
+          }
+        }
+      }
+
+      button[type="submit"] {
+        background: linear-gradient(90deg, #66A182 0%, #CAFFB9 100%);
+        color: #185a9d;
+        font-weight: 600;
+        font-size: 1.08rem;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 0;
+        margin-top: 8px;
+        box-shadow: 0 2px 8px rgba(102, 161, 130, 0.13);
+        cursor: pointer;
+        transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+
+        &:hover {
+          background: linear-gradient(90deg, #CAFFB9 0%, #66A182 100%);
+          color: #1565c0;
+          box-shadow: 0 4px 16px rgba(102, 161, 130, 0.18);
+        }
+      }
+    }
+  }
+
+  .division-tarjeta-servicio {
+    border: none;
+    border-top: 1.5px solid #e0e0e0;
+    margin: 0 0 18px 0;
+    width: 100%;
+  }
+
+  @media (max-width: 900px) {
+    padding: 1rem;
+
+    .tarjeta-agregar-vehiculo {
+      padding: 16px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    padding: 0.5rem;
+
+    .tarjeta-agregar-vehiculo {
+      padding: 10px 2px;
+      margin-bottom: 14px;
+      border-radius: 0;
+    }
+
+    .formulario-vehiculo {
+      max-width: 100%;
+      gap: 0.7rem;
+    }
+
+    .formulario-vehiculo .form-group {
+      gap: 0.3rem;
+    }
+
+    .formulario-vehiculo input,
+    .formulario-vehiculo select {
+      font-size: 0.97rem;
+      padding: 0.5rem 0.6rem;
+    }
+
+    .formulario-vehiculo button[type="submit"] {
+      font-size: 1rem;
+      padding: 9px 0;
+    }
+
+    .tabla-vehiculos {
+      font-size: 0.92rem;
+      overflow-x: auto;
+      display: block;
+      min-width: 420px;
+      width: 100%;
+    }
+
+    .tabla-vehiculos th,
+    .tabla-vehiculos td {
+      padding: 4px 6px;
+    }
+
+    h1, h2 {
+      font-size: 1.2rem;
+      text-align: center;
+    }
+
+    .btn-toggle-formulario {
+      width: 100%;
+      font-size: 1rem;
+      padding: 10px 0;
+      min-width: unset;
+    }
+  }
 }
