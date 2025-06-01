@@ -83,7 +83,14 @@ export default function VerProgramacion() {
     }
 
     const fechaHoraInicio = new Date(`${formulario.fechaInicioDeServicio}T${formulario.horaInicioDeServicio}`);
-    const fechaFin = new Date(formulario.fechaFinDeServicio);
+
+    // Si el usuario no especifica hora de fin, por defecto será 23:55
+    let fechaFin;
+    if (formulario.fechaFinDeServicio) {
+      fechaFin = new Date(`${formulario.fechaFinDeServicio}T23:55:00`);
+    } else {
+      fechaFin = new Date(fechaHoraInicio); // fallback
+    }
 
     // Validar que no se inicie en domingo
     if (fechaHoraInicio.getDay() === 0) {
