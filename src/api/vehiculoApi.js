@@ -12,3 +12,7 @@ export const eliminarVehiculo = async (id) => {
 export const actualizarVehiculo = async (_id, update) => {
   return axios.put('http://localhost:5600/api/v1/Vehiculo', { _id, update });
 };
+
+export const crearVehiculo = async (vehiculo) => {
+  return axios.post('http://localhost:5600/api/v1/Vehiculo', vehiculo);
+};
