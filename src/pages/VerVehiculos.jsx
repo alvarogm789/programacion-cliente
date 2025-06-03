@@ -4,14 +4,11 @@
 // }
 
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import './VerVehiculos.scss';
-import { actualizarVehiculo, eliminarVehiculo } from '../api/vehiculoApi';
-
+import { obtenerVehiculos, actualizarVehiculo, eliminarVehiculo, crearVehiculo } from '../api/vehiculoApi';
 
 export default function VerVehiculos() {
   const [vehiculo, setVehiculo] = useState({
-    // idVehiculo: '',
     placaVehiculo: '',
     conductorAsignado: '',
     estado: ''
@@ -21,16 +18,12 @@ export default function VerVehiculos() {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
   useEffect(() => {
-    obtenerVehiculos();
+    cargarVehiculos();
   }, []);
 
-  const obtenerVehiculos = () => {
-    axios
-      .get('http://localhost:5600/api/v1/Vehiculo')
-      .then((res) => {
-        const data = Array.isArray(res.data) ? res.data : res.data.msg;
-        setVehiculos(data);
-      })
+  const cargarVehiculos = () => {
+    obtenerVehiculos()
+      .then((data) => setVehiculos(data))
       .catch((err) => {
         console.error('Error al obtener vehículos:', err);
         setVehiculos([]);
@@ -48,17 +41,15 @@ export default function VerVehiculos() {
       ...vehiculo,
       estado: vehiculo.estado === "" ? 0 : Number(vehiculo.estado)
     };
-    axios
-      .post('http://localhost:5600/api/v1/Vehiculo', vehiculoAEnviar)
+    crearVehiculo(vehiculoAEnviar)
       .then(() => {
         setVehiculo({
           placaVehiculo: '',
           conductorAsignado: '',
           estado: ''
         });
-        obtenerVehiculos();
+        cargarVehiculos();
         alert("✅ Vehículo guardado con éxito");
-        console.log("vehiculo guardado con exito")
       })
       .catch((err) => console.error('Error al guardar vehículo:', err));
   };
@@ -67,7 +58,7 @@ export default function VerVehiculos() {
     if (window.confirm("¿Seguro que deseas eliminar este vehículo?")) {
       eliminarVehiculo(id)
         .then(() => {
-          obtenerVehiculos();
+          cargarVehiculos();
           alert("✅ Vehículo eliminado con éxito");
         })
         .catch((err) => {
@@ -80,7 +71,7 @@ export default function VerVehiculos() {
   const handleActualizarDisponibilidad = (id, nuevoEstado) => {
     actualizarVehiculo(id, { estado: Number(nuevoEstado) })
       .then(() => {
-        obtenerVehiculos();
+        cargarVehiculos();
         alert("✅ Disponibilidad actualizada");
       })
       .catch((err) => {
@@ -172,9 +163,9 @@ export default function VerVehiculos() {
                   style={{
                     backgroundColor:
                       v.estado === 0 || v.estado === "0"
-                        ? "#b2f7b8" // verde claro
+                        ? "#b2f7b8"
                         : v.estado === 1 || v.estado === "1"
-                        ? "#ffbdbd" // rojo claro
+                        ? "#ffbdbd"
                         : "white",
                     color: "#222"
                   }}
@@ -184,9 +175,6 @@ export default function VerVehiculos() {
                 </select>
               </td>
               <td>
-
-                {/* <button onClick={() => setVehiculoEditando(v)}>Editar</button> */}
-                
                 <button
                   className="btn-eliminar"
                   style={{ color: "#fff", background: "#e74c3c", border: "none", borderRadius: 4, padding: "4px 10px", cursor: "pointer" }}
@@ -194,8 +182,6 @@ export default function VerVehiculos() {
                 >
                   Eliminar
                 </button>
-
-
               </td>
             </tr>
           ))}

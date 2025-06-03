@@ -305,6 +305,16 @@ export default function VerProgramacion() {
     setDiaSeleccionado(null);
   };
 
+  const clientesOpciones = [
+    "CCF COMFENALCO ANTIOQUIA",
+    "INSTITUCIÒN UNIVERSITARIA COLEGIO MAYOR DE ANTIOQUIA",
+    "ASOCIACION PADRES DE FAMILIA IE MATER DEI",
+    "COOPERATIVA DE TRANSPORTADORES CONTRATISTAS",
+    "SISTEMAS EN PROTECCION CONTRA INCENDIOS SAS",
+    "ARQUITECTURA Y CONCRETO",
+    "COOPERATIVA MULTIACTIVA DE MILITARES EN RETIRO DE ANTIOQUIA"
+  ];
+
   const vehiculosFiltrados = vehiculosDisponibles
     .filter(v => v.estado === 0)
     .filter(v =>
@@ -359,7 +369,7 @@ export default function VerProgramacion() {
             </div>
 
             <div className="form-group">
-              <label>Descripción</label>
+              <label>Descripción (Origen/Destino)</label>
               <input
                 type="text"
                 name="descripcionServicio"
@@ -371,11 +381,18 @@ export default function VerProgramacion() {
             <div className="form-group">
               <label>Cliente</label>
               <input
-                type="text"
-                name="cliente" // antes era idServicio
+                list="clientes-list"
+                name="cliente"
                 value={formulario.cliente}
                 onChange={handleChange}
+                placeholder="Seleccione o escriba un cliente"
+                autoComplete="off"
               />
+              <datalist id="clientes-list">
+                {clientesOpciones.map((cliente, idx) => (
+                  <option key={idx} value={cliente} />
+                ))}
+              </datalist>
             </div>
 
             <div className="form-group">
@@ -452,8 +469,8 @@ export default function VerProgramacion() {
                     onClick={() => manejarClickEnDia(dia)}
                     style={{
                       cursor: 'pointer',
-                      backgroundColor: esDomingo ? '#ffe6e6' : '#f0f0f0', // Color especial para domingo
-                      color: esDomingo ? '#c0392b' : undefined // Texto rojo para domingo
+                      backgroundColor: esDomingo ? '#ffe6e6' : '#f0f0f0', // color especial para domingo
+                      color: esDomingo ? '#c0392b' : undefined // texto rojo para domingo
                     }}
                     title={esDomingo ? "Domingo (no hay servicios)" : "Ver servicios de este día"}
                   >
