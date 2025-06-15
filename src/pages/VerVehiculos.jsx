@@ -10,6 +10,10 @@ import { obtenerVehiculos, actualizarVehiculo, eliminarVehiculo, crearVehiculo }
 export default function VerVehiculos() {
   const [vehiculo, setVehiculo] = useState({
     placaVehiculo: '',
+    tipo: '',
+    vehiculo: '',
+    capacidad: '',
+    relacion: '',
     conductorAsignado: '',
     estado: ''
   });
@@ -45,6 +49,10 @@ export default function VerVehiculos() {
       .then(() => {
         setVehiculo({
           placaVehiculo: '',
+          tipo: '',
+          vehiculo: '',
+          capacidad: '',
+          relacion: '',
           conductorAsignado: '',
           estado: ''
         });
@@ -146,15 +154,23 @@ export default function VerVehiculos() {
         <thead>
           <tr>
             <th>Placa</th>
+            <th>Tipo</th>
+            <th>Vehículo</th>
+            <th>Capacidad</th>
+            <th>Relación</th>
             <th>Conductor Asignado</th>
             <th>Disponibilidad</th>
-            <th>Accion</th>
+            <th>Acción</th>
           </tr>
         </thead>
         <tbody>
           {vehiculos.map((v, idx) => (
             <tr key={idx}>
               <td>{v.placaVehiculo}</td>
+              <td>{v.tipo}</td>
+              <td>{v.vehiculo}</td>
+              <td>{v.capacidad}</td>
+              <td>{v.relacion}</td>
               <td>{v.conductorAsignado}</td>
               <td>
                 <select
