@@ -1,7 +1,6 @@
 // VerProgramacion.jsx
 import { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
-import * as XLSX from 'xlsx';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import './VerProgramacion.scss';
@@ -9,7 +8,113 @@ import { obtenerServicios, guardarServicio, eliminarServicio } from '../api/serv
 import { obtenerVehiculos } from '../api/vehiculoApi';
 import Modal from '../components/ModalDia';
 
+// import * as XLSX from 'xlsx';
+import * as XLSX from 'xlsx-js-style';
+
+
+
+
 export default function VerProgramacion() {
+  
+
+  const exportarExcelDelDia = () => {
+    const coloresClientes = {};
+    let colorIndex = 0;
+
+    // Generar colores únicos por cliente
+    const generarColor = () => {
+      const colores = [
+        "#F28B82", "#FBBC04", "#FFF475", "#CCFF90", "#A7FFEB", "#CBF0F8",
+        "#AECBFA", "#D7AEFB", "#FDCFE8", "#E6C9A8", "#E8EAED"
+      ];
+      return colores[colorIndex++ % colores.length];
+    };
+
+    // Agrupar por cliente los servicios del día
+    const serviciosAgrupados = serviciosDelDia.map(serv => {
+      if (!coloresClientes[serv.cliente]) {
+        coloresClientes[serv.cliente] = generarColor();
+      }
+
+      return {
+        Estado: "OCUPADO",
+        Cliente: serv.cliente,
+        Placa: serv.placaVehiculoAsignado,
+        Descripción: serv.descripcionServicio,
+        Inicio: new Date(serv.fechaInicioDeServicio).toLocaleString(),
+        Fin: new Date(serv.fechaFinDeServicio).toLocaleString(),
+        Color: coloresClientes[serv.cliente],
+      };
+    });
+
+    const disponibles = vehiculosFiltrados.map(v => ({
+      Estado: "DISPONIBLE",
+      Cliente: "",
+      Placa: v.placaVehiculo,
+      Descripción: v.conductorAsignado || "",
+      Inicio: "",
+      Fin: "",
+      Color: "#C6EFCE" // verde claro para disponibles
+    }));
+
+    const hojaDatos = [...serviciosAgrupados, ...disponibles];
+
+    const wsData = [
+      ["Estado", "Cliente", "Placa", "Descripción", "Inicio", "Fin"],
+      ...hojaDatos.map(item => [
+        item.Estado,
+        item.Cliente,
+        item.Placa,
+        item.Descripción,
+        item.Inicio,
+        item.Fin
+      ])
+    ];
+
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+    // Estilizar filas
+    hojaDatos.forEach((item, idx) => {
+      const row = idx + 1; // +1 porque headers están en fila 0
+      const fill = {
+        patternType: "solid",
+        fgColor: { rgb: item.Color.replace("#", "") }
+      };
+
+      for (let col = 0; col < 6; col++) {
+        const cell = XLSX.utils.encode_cell({ r: row, c: col });
+        if (!ws[cell]) continue;
+        ws[cell].s = {
+          fill,
+          border: {
+            top: { style: "thin", color: { rgb: "000000" } },
+            bottom: { style: "thin", color: { rgb: "000000" } },
+            left: { style: "thin", color: { rgb: "000000" } },
+            right: { style: "thin", color: { rgb: "000000" } }
+          }
+        };
+      }
+    });
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Servicios del Día");
+
+    const fecha = diaSeleccionado?.toLocaleDateString().replace(/\//g, '-');
+    XLSX.writeFile(wb, `Servicios-${fecha}.xlsx`);
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
   const hoy = new Date();
 
   // Leer del localStorage o usar el mes/año actual
@@ -22,7 +127,8 @@ export default function VerProgramacion() {
     descripcionServicio: '',
     fechaInicioDeServicio: '',
     horaInicioDeServicio: '',
-    fechaFinDeServicio: ''
+    fechaFinDeServicio: '',
+    valorServicio: ''
   });
 
   const [vehiculos, setVehiculos] = useState([]);
@@ -117,7 +223,8 @@ export default function VerProgramacion() {
           descripcionServicio: '',
           fechaInicioDeServicio: '',
           horaInicioDeServicio: '',
-          fechaFinDeServicio: ''
+          fechaFinDeServicio: '',
+          valorServicio: ''
         });
         return obtenerServicios();
       })
@@ -362,7 +469,7 @@ export default function VerProgramacion() {
                   .filter(vehiculo => vehiculo.estado === 0) // Solo disponibles
                   .map((vehiculo, index) => (
                     <option key={index} value={vehiculo.placaVehiculo}>
-                      {vehiculo.placaVehiculo}
+                      {vehiculo.conductores ? `${vehiculo.placaVehiculo} - ${vehiculo.conductores}` : vehiculo.placaVehiculo}
                     </option>
                   ))}
               </select>
@@ -424,6 +531,17 @@ export default function VerProgramacion() {
                 onChange={handleChange}
               />
             </div>
+
+            <div className="form-group">
+              <label>Valor del Servicio</label>
+              <input
+                type="text"
+                name="valorServicio"
+                value={formulario}
+                onChange={handleChange}
+              />
+            </div>
+
 
             <button type="submit">Guardar Servicio</button>
           </form>
@@ -580,11 +698,22 @@ export default function VerProgramacion() {
                     )}
                   </li>
                 ))}
+
+                <button className="btn-export-dia" onClick={exportarExcelDelDia}>
+                  📤 Exportar Excel del Día
+                </button>
+
             </ul>
+            
           ) : (
             <ul className="modal-vehiculos-list" style={{ minHeight: 80 }}>
               <li className="modal-vacio">No hay vehículos disponibles que coincidan.</li>
             </ul>
+
+          
+
+
+
           )}
         </div>
       </Modal>

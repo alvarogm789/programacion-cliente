@@ -14,12 +14,15 @@ export default function VerVehiculos() {
     vehiculo: '',
     capacidad: '',
     relacion: '',
-    conductorAsignado: '',
+    // conductorAsignado: '',
+    conductores: [],
     estado: ''
   });
 
   const [vehiculos, setVehiculos] = useState([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [busqueda, setBusqueda] = useState("");
+  const [mostrarSoloNoDisponibles, setMostrarSoloNoDisponibles] = useState(false);
 
   useEffect(() => {
     cargarVehiculos();
@@ -53,7 +56,8 @@ export default function VerVehiculos() {
           vehiculo: '',
           capacidad: '',
           relacion: '',
-          conductorAsignado: '',
+          // conductorAsignado: '',
+          conductores: [],
           estado: ''
         });
         cargarVehiculos();
@@ -88,6 +92,20 @@ export default function VerVehiculos() {
       });
   };
 
+  const vehiculosFiltrados = vehiculos.filter(v => {
+    const coincideBusqueda =
+      (v.placaVehiculo && v.placaVehiculo.toLowerCase().includes(busqueda.toLowerCase())) ||
+      (v.tipo && v.tipo.toLowerCase().includes(busqueda.toLowerCase())) ||
+      (v.vehiculo && v.vehiculo.toLowerCase().includes(busqueda.toLowerCase())) ||
+      (v.relacion && v.relacion.toLowerCase().includes(busqueda.toLowerCase()));
+
+    const coincideDisponibilidad = mostrarSoloNoDisponibles ? v.estado === 1 : true;
+
+    return coincideBusqueda && coincideDisponibilidad;
+  });
+
+  const vehiculosNoDisponibles = vehiculosFiltrados.filter(v => v.estado === 1 || v.estado === "1");
+
   return (
     <div className="ver-vehiculos">
       <h1>Registrar nuevo vehículo</h1>
@@ -117,7 +135,8 @@ export default function VerVehiculos() {
               <label>Conductor Asignado</label>
               <input
                 type="text"
-                name="conductorAsignado"
+                // name="conductorAsignado"
+                name="conductores"
                 value={vehiculo.conductorAsignado}
                 onChange={handleChange}
                 required
@@ -150,12 +169,30 @@ export default function VerVehiculos() {
       )}
 
       <h2>Vehículos registrados</h2>
+      <input
+        type="text"
+        placeholder="Buscar por placa, tipo, vehículo, relación..."
+        value={busqueda}
+        onChange={e => setBusqueda(e.target.value)}
+        style={{ marginBottom: "1rem", width: "100%", padding: "8px" }}
+      />
+      <div style={{ marginBottom: "1rem" }}>
+        <label style={{ display: "block", marginBottom: 8 }}>
+          <input
+            type="checkbox"
+            checked={mostrarSoloNoDisponibles}
+            onChange={e => setMostrarSoloNoDisponibles(e.target.checked)}
+            style={{ marginRight: 8 }}
+          />
+          Mostrar solo NO disponibles
+        </label>
+      </div>
       <table className="tabla-vehiculos">
         <thead>
           <tr>
             <th>Placa</th>
             <th>Tipo</th>
-            <th>Vehículo</th>
+            {/* <th>Vehículo</th> */}
             <th>Capacidad</th>
             <th>Relación</th>
             <th>Conductor Asignado</th>
@@ -164,14 +201,16 @@ export default function VerVehiculos() {
           </tr>
         </thead>
         <tbody>
-          {vehiculos.map((v, idx) => (
+          {(mostrarSoloNoDisponibles ? vehiculosNoDisponibles : vehiculosFiltrados).map((v, idx) => (
             <tr key={idx}>
               <td>{v.placaVehiculo}</td>
               <td>{v.tipo}</td>
-              <td>{v.vehiculo}</td>
+              {/* <td>{v.vehiculo}</td> */}
               <td>{v.capacidad}</td>
               <td>{v.relacion}</td>
-              <td>{v.conductorAsignado}</td>
+              {/* <td>{v.conductorAsignado}</td> */}
+              <td>{v.conductores}</td>
+
               <td>
                 <select
                   value={v.estado}
